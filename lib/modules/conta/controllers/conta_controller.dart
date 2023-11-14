@@ -255,10 +255,7 @@ class ContaController extends ChangeNotifier {
                     if (snapshot.connectionState == ConnectionState.done) {
                       var categorias = snapshot.data!;
                       return DropdownButtonFormField(
-                        // value: categoriaSelecionada,
-                        items: Provider.of<CategoriaController>(context,
-                                listen: false)
-                            .categorias
+                        items: categorias
                             .map(
                               (e) => DropdownMenuItem<Categoria>(
                                 value: e,
@@ -269,6 +266,7 @@ class ContaController extends ChangeNotifier {
                         onChanged: (value) {
                           categoriaSelecionada = value;
                         },
+                        value: categoriaSelecionada,
                         decoration: const InputDecoration(
                           hintText: 'Categoria',
                         ),
@@ -368,23 +366,21 @@ class ContaController extends ChangeNotifier {
           ElevatedButton.icon(
               onPressed: () async {
                 if (formKey.currentState?.validate() ?? false) {
-                  var conta = Conta(
-                    categoria: categoriaSelecionada!,
-                    tipo: tipoSelecionado == 'Despesa' ? true : false,
-                    data: Utils.convertDate(dataController.text),
-                    descricao: descricaoController.text,
-                    valor: UtilBrasilFields.converterMoedaParaDouble(
-                        (valorController.text)),
-                    destinoOrigem: destinoOrigemController.text,
-                    status: false,
-                  );
-                  await save(conta);
+                  data.categoria = categoriaSelecionada!;
+                  data.tipo = tipoSelecionado == 'Despesa' ? true : false;
+                  data.data = Utils.convertDate(dataController.text);
+                  data.descricao = descricaoController.text;
+                  data.valor = UtilBrasilFields.converterMoedaParaDouble(
+                      (valorController.text));
+                  data.destinoOrigem = destinoOrigemController.text;
+                  data.status = false;
+                  await update(data);
                   Navigator.of(context).pop();
                   notifyListeners();
                 }
               },
               icon: const Icon(Icons.save),
-              label: const Text('Salvar'))
+              label: const Text('Atualizar'))
         ],
       ),
     );
