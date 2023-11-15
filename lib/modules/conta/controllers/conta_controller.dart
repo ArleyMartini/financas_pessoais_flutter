@@ -75,6 +75,13 @@ class ContaController extends ChangeNotifier {
 
   create(BuildContext context) {
     final formKey = GlobalKey<FormState>();
+    categoriaSelecionada = null;
+    tipoSelecionado = 'Despesa';
+    dataController.clear();
+    descricaoController.clear();
+    valorController.clear();
+    destinoOrigemController.clear();
+    statusSelecionado = 'Pedente';
 
     showDialog(
       context: context,
@@ -146,6 +153,10 @@ class ContaController extends ChangeNotifier {
                   },
                 ),
                 TextFormField(
+                  onTap: () {
+                    FocusScope.of(context).requestFocus(FocusNode());
+                    selecionarData(context);
+                  },
                   controller: dataController,
                   decoration: const InputDecoration(
                     hintText: 'Data',
@@ -229,7 +240,6 @@ class ContaController extends ChangeNotifier {
 
   edit(BuildContext context, Conta data) {
     final formKey = GlobalKey<FormState>();
-    final dataController = TextEditingController(text: data.data);
     categoriaSelecionada = data.categoria;
     tipoSelecionado = data.tipo == true ? 'Despesa' : 'Receita';
     dataController.text = Utils.convertDate(data.data);
@@ -309,6 +319,10 @@ class ContaController extends ChangeNotifier {
                   },
                 ),
                 TextFormField(
+                  onTap: () {
+                    FocusScope.of(context).requestFocus(FocusNode());
+                    selecionarData(context);
+                  },
                   controller: dataController,
                   decoration: const InputDecoration(
                     hintText: 'Data',
@@ -398,7 +412,7 @@ class ContaController extends ChangeNotifier {
       ),
     );
     if (dataSelecionada != null) {
-      dataController.text = DateFormat('dd/mm/yyyy').format(dataSelecionada);
+      dataController.text = DateFormat('dd/MM/yyyy').format(dataSelecionada);
       notifyListeners();
     }
   }
