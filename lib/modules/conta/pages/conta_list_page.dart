@@ -34,6 +34,8 @@ class ContaListPage extends StatelessWidget {
                     onLongPress: () => context
                         .read<ContaController>()
                         .edit(context, data[index]),
+                    onDoubleTap: () =>
+                        context.read<ContaController>().delete(data[index]),
                     child: Container(
                       padding: const EdgeInsets.all(8),
                       margin: const EdgeInsets.all(8),

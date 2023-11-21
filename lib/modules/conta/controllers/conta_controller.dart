@@ -101,9 +101,7 @@ class ContaController extends ChangeNotifier {
                     if (snapshot.connectionState == ConnectionState.done) {
                       var categorias = snapshot.data!;
                       return DropdownButtonFormField(
-                        items: Provider.of<CategoriaController>(context,
-                                listen: false)
-                            .categorias
+                        items: categorias
                             .map(
                               (e) => DropdownMenuItem<Categoria>(
                                 value: e,
