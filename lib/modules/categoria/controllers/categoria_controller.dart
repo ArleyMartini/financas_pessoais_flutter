@@ -1,24 +1,24 @@
 import 'dart:developer';
+import 'package:financas_pessoais_flutter/database/objectbox_database.dart';
 import 'package:financas_pessoais_flutter/modules/categoria/models/categoria_model.dart';
-import 'package:financas_pessoais_flutter/modules/categoria/repository/categoria_repository.dart';
-import 'package:financas_pessoais_flutter/utils/back_routes.dart';
 import 'package:flutter/material.dart';
+import 'package:objectbox/objectbox.dart';
 
 class CategoriaController extends ChangeNotifier {
   List<Categoria> categorias = [];
 
-  Future<List<Categoria>?> findAll() async {
-    var categoriaRepository = CategoriaRepository();
-    try {
-      final response = await categoriaRepository
-          .getAll(BackRoutes.baseUrl + BackRoutes.CATEGORIA_ALL);
-      if (response != null) {
-        List<Categoria> lista =
-            response.map<Categoria>((e) => Categoria.fromMap(e)).toList();
+  Future<Box<Categoria>> getBox() async {
+    final store = await ObjectboxDatabase.getStore();
 
-        categorias = lista;
-        return categorias;
-      }
+    return store.box<Categoria>();
+  }
+
+  Future<List<Categoria>?> findAll() async {
+    try {
+      final box = await getBox();
+      categorias = box.getAll();
+
+      return categorias;
     } catch (e) {
       log(e.toString());
     }
@@ -26,15 +26,30 @@ class CategoriaController extends ChangeNotifier {
   }
 
   Future<void> save(Categoria categoria) async {
-    var categoriaRepository = CategoriaRepository();
     try {
-      final response = await categoriaRepository.save(
-          BackRoutes.baseUrl + BackRoutes.CATEGORIA_SAVE, categoria);
-      if (response != null) {
-        Categoria categoria =
-            Categoria.fromMap(response as Map<String, dynamic>);
-        categorias.add(categoria);
-      }
+      final box = await getBox();
+      box.put(categoria);
+      categorias.add(categoria);
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  Future<void> update(Categoria categoria) async {
+    try {
+      final box = await getBox();
+      box.put(categoria);
+      categorias.add(categoria);
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  delete(BuildContext context, Categoria data) async {
+    try {
+      final box = await getBox();
+      box.remove(data.id!);
+      categorias.remove(data);
     } catch (e) {
       log(e.toString());
     }
@@ -120,39 +135,5 @@ class CategoriaController extends ChangeNotifier {
         ],
       ),
     );
-  }
-
-  delete(BuildContext context, Categoria data) async {
-    var categoriaRepository = CategoriaRepository();
-    try {
-      final response = await categoriaRepository.delete(
-          BackRoutes.baseUrl + BackRoutes.CATEGORIA_DELETE, data);
-      if (response != null) {
-        categorias.remove(data);
-        notifyListeners();
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(e.toString()),
-      ));
-      log(e.toString());
-    }
-  }
-
-  Future<void> update(Categoria categoria) async {
-    var categoriaRepository = CategoriaRepository();
-    try {
-      final response = await categoriaRepository.update(
-          BackRoutes.baseUrl + BackRoutes.CATEGORIA_UPDATE, categoria);
-      if (response != null) {
-        Categoria categoriaEdit =
-            Categoria.fromMap(response as Map<String, dynamic>);
-        categorias.add(categoriaEdit);
-        categorias.remove(categoria);
-        notifyListeners();
-      }
-    } catch (e) {
-      log(e.toString());
-    }
   }
 }

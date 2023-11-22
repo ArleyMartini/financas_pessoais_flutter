@@ -11,11 +11,7 @@ class ContaListPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final controller = Provider.of<ContaController>(context);
     final controller = context.watch<ContaController>();
-
-    // final controller = Provider.of<ContaController>(context, listen: false);
-    // final controller = context.read<ContaController>();
 
     return Scaffold(
       drawer: const MyDrawer(),
@@ -37,19 +33,19 @@ class ContaListPage extends StatelessWidget {
                     onDoubleTap: () => showDialog(
                       context: context,
                       builder: (context) => AlertDialog(
-                        title: Text('Confirmar exclusão?'),
+                        title: const Text('Confirmar exclusão?'),
                         actions: [
                           TextButton(
                               onPressed: () => Navigator.of(context).pop(),
-                              child: Text('Cancelar')),
+                              child: const Text('Cancelar')),
                           TextButton(
                               onPressed: () {
                                 context
                                     .read<ContaController>()
-                                    .delete(data[index]);
+                                    .delete(context, data[index]);
                                 Navigator.of(context).pop();
                               },
-                              child: Text('Confirmar')),
+                              child: const Text('Confirmar')),
                         ],
                       ),
                     ),
@@ -58,8 +54,8 @@ class ContaListPage extends StatelessWidget {
                       margin: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
                           color: data[index].tipo == true
-                              ? Color.fromARGB(128, 255, 64, 128)
-                              : Color.fromARGB(128, 105, 240, 175),
+                              ? const Color.fromARGB(128, 255, 64, 128)
+                              : const Color.fromARGB(128, 105, 240, 175),
                           borderRadius: BorderRadius.circular(20),
                           boxShadow: const [
                             BoxShadow(
@@ -82,7 +78,7 @@ class ContaListPage extends StatelessWidget {
                                       fontWeight: FontWeight.w800,
                                     ),
                               ),
-                              Text(data[index].descricao),
+                              Text(data[index].descricao!),
                               const SizedBox(height: 8),
                               Text(
                                 'Data',
@@ -93,7 +89,9 @@ class ContaListPage extends StatelessWidget {
                                       fontWeight: FontWeight.w800,
                                     ),
                               ),
-                              Text(Utils.convertDate(data[index].data)),
+                              Text(data[index].data == null
+                                  ? '-'
+                                  : Utils.convertDate(data[index].data!)),
                             ],
                           ),
                           Column(
@@ -120,39 +118,16 @@ class ContaListPage extends StatelessWidget {
                                       fontWeight: FontWeight.w800,
                                     ),
                               ),
-                              Text(UtilBrasilFields.obterReal(
-                                  data[index].valor)),
+                              Text(data[index].valor == null
+                                  ? '-'
+                                  : UtilBrasilFields.obterReal(
+                                      data[index].valor!)),
                             ],
                           ),
                         ],
                       ),
                     ),
                   ),
-                  // Card(
-                  //   child: ListTile(
-                  //     title: Text(data[index].descricao),
-                  //     trailing: Row(
-                  //       mainAxisSize: MainAxisSize.min,
-                  //       children: [
-                  //         IconButton(
-                  //           onPressed: () =>
-                  //               controller.edit(context, data[index]),
-                  //           icon: const Icon(
-                  //             Icons.edit,
-                  //             color: Colors.amber,
-                  //           ),
-                  //         ),
-                  //         IconButton(
-                  //           onPressed: () => controller.delete(data[index]),
-                  //           icon: const Icon(
-                  //             Icons.delete,
-                  //             color: Colors.red,
-                  //           ),
-                  //         )
-                  //       ],
-                  //     ),
-                  //   ),
-                  // ),
                 );
               } else {
                 return const Center(
