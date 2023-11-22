@@ -34,8 +34,25 @@ class ContaListPage extends StatelessWidget {
                     onLongPress: () => context
                         .read<ContaController>()
                         .edit(context, data[index]),
-                    onDoubleTap: () =>
-                        context.read<ContaController>().delete(data[index]),
+                    onDoubleTap: () => showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: Text('Confirmar exclusão?'),
+                        actions: [
+                          TextButton(
+                              onPressed: () => Navigator.of(context).pop(),
+                              child: Text('Cancelar')),
+                          TextButton(
+                              onPressed: () {
+                                context
+                                    .read<ContaController>()
+                                    .delete(data[index]);
+                                Navigator.of(context).pop();
+                              },
+                              child: Text('Confirmar')),
+                        ],
+                      ),
+                    ),
                     child: Container(
                       padding: const EdgeInsets.all(8),
                       margin: const EdgeInsets.all(8),
