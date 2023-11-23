@@ -1,10 +1,10 @@
 import 'dart:developer';
 import 'package:brasil_fields/brasil_fields.dart';
+import 'package:financas_pessoais_flutter/database/objectbox.g.dart';
 import 'package:financas_pessoais_flutter/database/objectbox_database.dart';
 import 'package:financas_pessoais_flutter/modules/categoria/controllers/categoria_controller.dart';
 import 'package:financas_pessoais_flutter/modules/categoria/models/categoria_model.dart';
 import 'package:financas_pessoais_flutter/modules/conta/models/conta_model.dart';
-import 'package:financas_pessoais_flutter/modules/conta/repositiry/conta_repository.dart';
 import 'package:financas_pessoais_flutter/modules/home/models/resumo_DTO.dart';
 import 'package:financas_pessoais_flutter/utils/back_routes.dart';
 import 'package:financas_pessoais_flutter/utils/utils.dart';
@@ -48,17 +48,35 @@ class ContaController extends ChangeNotifier {
   }
 
   Future<ResumoDTO?> resumo() async {
-    var contaRepository = ContaRepository();
-    try {
-      final response = await contaRepository
-          .getResumo(BackRoutes.baseUrl + BackRoutes.CONTA_RESUMO);
-      if (response != null) {
-        return ResumoDTO.fromMap(response);
-      }
-    } catch (e) {
-      log(e.toString());
-    }
-    return null;
+    final box = await getBox();
+    final queryDespesa =
+        box.query(Conta_.tipo.equals(true)).order(Conta_.id).build();
+
+    final queryReceita =
+        box.query(Conta_.tipo.equals(false)).order(Conta_.id).build();
+
+    final contasDespesas = queryDespesa.find();
+    final contasReceitas = queryReceita.find();
+
+    queryDespesa.close();
+    queryReceita.close();
+
+    double totalDespesa = 0.0;
+    double totalReceita = 0.0;
+    double saldo = 0.0;
+
+    contasDespesas.forEach((element) {
+      totalDespesa += element.valor ?? 0.0;
+    });
+
+    contasReceitas.forEach((element) {
+      totalReceita += element.valor ?? 0.0;
+    });
+
+    saldo = totalReceita - totalDespesa;
+
+    return ResumoDTO(
+        totalReceita: totalReceita, totalDespesa: totalDespesa, saldo: saldo);
   }
 
   Future<void> save(Conta conta) async {
