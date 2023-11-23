@@ -50,6 +50,7 @@ class CategoriaController extends ChangeNotifier {
       final box = await getBox();
       box.remove(data.id!);
       categorias.remove(data);
+      notifyListeners();
     } catch (e) {
       log(e.toString());
     }

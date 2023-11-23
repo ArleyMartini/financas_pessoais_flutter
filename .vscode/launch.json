@@ -1,0 +1,25 @@
+{
+    // Use o IntelliSense para saber mais sobre os atributos possíveis.
+    // Focalizar para exibir as descrições dos atributos existentes.
+    // Para obter mais informações, acesse: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "financas_pessoais_flutter",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "financas_pessoais_flutter (debug mode)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "debug"
+        },
+        {
+            "name": "financas_pessoais_flutter (release mode)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        }
+    ]
+}

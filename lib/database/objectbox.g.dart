@@ -21,28 +21,28 @@ export 'package:objectbox/objectbox.dart'; // so that callers only have to impor
 
 final _entities = <ModelEntity>[
   ModelEntity(
-      id: const IdUid(1, 1427523610004016239),
+      id: const IdUid(1, 6067492008592677548),
       name: 'Categoria',
-      lastPropertyId: const IdUid(4, 5173165494428024505),
+      lastPropertyId: const IdUid(4, 6366266055886638085),
       flags: 0,
       properties: <ModelProperty>[
         ModelProperty(
-            id: const IdUid(1, 5246575344962941046),
+            id: const IdUid(1, 4131321859980132907),
             name: 'id',
             type: 6,
             flags: 1),
         ModelProperty(
-            id: const IdUid(2, 6373820661584082130),
+            id: const IdUid(2, 7039239575567821335),
             name: 'createdAt',
             type: 9,
             flags: 0),
         ModelProperty(
-            id: const IdUid(3, 6764476280494055266),
+            id: const IdUid(3, 3592477931564416228),
             name: 'updatedAt',
             type: 9,
             flags: 0),
         ModelProperty(
-            id: const IdUid(4, 5173165494428024505),
+            id: const IdUid(4, 6366266055886638085),
             name: 'nome',
             type: 9,
             flags: 0)
@@ -50,53 +50,60 @@ final _entities = <ModelEntity>[
       relations: <ModelRelation>[],
       backlinks: <ModelBacklink>[]),
   ModelEntity(
-      id: const IdUid(2, 4395390992697219219),
+      id: const IdUid(2, 2744832433402448563),
       name: 'Conta',
-      lastPropertyId: const IdUid(9, 1801492774928667660),
+      lastPropertyId: const IdUid(10, 7376675640117413808),
       flags: 0,
       properties: <ModelProperty>[
         ModelProperty(
-            id: const IdUid(1, 1483448205518277405),
+            id: const IdUid(1, 7462724623715864175),
             name: 'id',
             type: 6,
             flags: 1),
         ModelProperty(
-            id: const IdUid(2, 5599914194622305684),
+            id: const IdUid(2, 7657535009994917745),
             name: 'createdAt',
             type: 9,
             flags: 0),
         ModelProperty(
-            id: const IdUid(3, 1564858250700405215),
+            id: const IdUid(3, 6435408134929782224),
             name: 'updatedAt',
             type: 9,
             flags: 0),
         ModelProperty(
-            id: const IdUid(4, 1193670491953133103),
+            id: const IdUid(4, 2305699206139371076),
+            name: 'categoriaId',
+            type: 11,
+            flags: 520,
+            indexId: const IdUid(1, 4704354417908001980),
+            relationTarget: 'Categoria'),
+        ModelProperty(
+            id: const IdUid(5, 5688718418534332640),
             name: 'tipo',
             type: 1,
             flags: 0),
         ModelProperty(
-            id: const IdUid(5, 4669404739907441904),
+            id: const IdUid(6, 6914183444630431902),
             name: 'data',
             type: 9,
             flags: 0),
         ModelProperty(
-            id: const IdUid(6, 7698495579011295005),
+            id: const IdUid(7, 8134370864911926466),
             name: 'descricao',
             type: 9,
             flags: 0),
         ModelProperty(
-            id: const IdUid(7, 9146591356849615059),
+            id: const IdUid(8, 4008903980198931615),
             name: 'valor',
             type: 8,
             flags: 0),
         ModelProperty(
-            id: const IdUid(8, 3852009500806614818),
+            id: const IdUid(9, 5394567051411458599),
             name: 'destinoOrigem',
             type: 9,
             flags: 0),
         ModelProperty(
-            id: const IdUid(9, 1801492774928667660),
+            id: const IdUid(10, 7376675640117413808),
             name: 'status',
             type: 1,
             flags: 0)
@@ -132,8 +139,8 @@ Future<Store> openStore(
 ModelDefinition getObjectBoxModel() {
   final model = ModelInfo(
       entities: _entities,
-      lastEntityId: const IdUid(2, 4395390992697219219),
-      lastIndexId: const IdUid(0, 0),
+      lastEntityId: const IdUid(2, 2744832433402448563),
+      lastIndexId: const IdUid(1, 4704354417908001980),
       lastRelationId: const IdUid(0, 0),
       lastSequenceId: const IdUid(0, 0),
       retiredEntityUids: const [],
@@ -191,7 +198,7 @@ ModelDefinition getObjectBoxModel() {
         }),
     Conta: EntityDefinition<Conta>(
         model: _entities[1],
-        toOneRelations: (Conta object) => [],
+        toOneRelations: (Conta object) => [object.categoria],
         toManyRelations: (Conta object) => {},
         getId: (Conta object) => object.id,
         setId: (Conta object, int id) {
@@ -212,16 +219,17 @@ ModelDefinition getObjectBoxModel() {
           final destinoOrigemOffset = object.destinoOrigem == null
               ? null
               : fbb.writeString(object.destinoOrigem!);
-          fbb.startTable(10);
+          fbb.startTable(11);
           fbb.addInt64(0, object.id ?? 0);
           fbb.addOffset(1, createdAtOffset);
           fbb.addOffset(2, updatedAtOffset);
-          fbb.addBool(3, object.tipo);
-          fbb.addOffset(4, dataOffset);
-          fbb.addOffset(5, descricaoOffset);
-          fbb.addFloat64(6, object.valor);
-          fbb.addOffset(7, destinoOrigemOffset);
-          fbb.addBool(8, object.status);
+          fbb.addInt64(3, object.categoria.targetId);
+          fbb.addBool(4, object.tipo);
+          fbb.addOffset(5, dataOffset);
+          fbb.addOffset(6, descricaoOffset);
+          fbb.addFloat64(7, object.valor);
+          fbb.addOffset(8, destinoOrigemOffset);
+          fbb.addBool(9, object.status);
           fbb.finish(fbb.endTable());
           return object.id ?? 0;
         },
@@ -235,18 +243,18 @@ ModelDefinition getObjectBoxModel() {
           final updatedAtParam = const fb.StringReader(asciiOptimization: true)
               .vTableGetNullable(buffer, rootOffset, 8);
           final tipoParam =
-              const fb.BoolReader().vTableGetNullable(buffer, rootOffset, 10);
+              const fb.BoolReader().vTableGetNullable(buffer, rootOffset, 12);
           final dataParam = const fb.StringReader(asciiOptimization: true)
-              .vTableGetNullable(buffer, rootOffset, 12);
-          final descricaoParam = const fb.StringReader(asciiOptimization: true)
               .vTableGetNullable(buffer, rootOffset, 14);
-          final valorParam = const fb.Float64Reader()
+          final descricaoParam = const fb.StringReader(asciiOptimization: true)
               .vTableGetNullable(buffer, rootOffset, 16);
+          final valorParam = const fb.Float64Reader()
+              .vTableGetNullable(buffer, rootOffset, 18);
           final destinoOrigemParam =
               const fb.StringReader(asciiOptimization: true)
-                  .vTableGetNullable(buffer, rootOffset, 18);
+                  .vTableGetNullable(buffer, rootOffset, 20);
           final statusParam =
-              const fb.BoolReader().vTableGetNullable(buffer, rootOffset, 20);
+              const fb.BoolReader().vTableGetNullable(buffer, rootOffset, 22);
           final object = Conta(
               id: idParam,
               createdAt: createdAtParam,
@@ -257,7 +265,9 @@ ModelDefinition getObjectBoxModel() {
               valor: valorParam,
               destinoOrigem: destinoOrigemParam,
               status: statusParam);
-
+          object.categoria.targetId =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 10, 0);
+          object.categoria.attach(store);
           return object;
         })
   };
@@ -296,23 +306,27 @@ class Conta_ {
   static final updatedAt =
       QueryStringProperty<Conta>(_entities[1].properties[2]);
 
+  /// see [Conta.categoria]
+  static final categoria =
+      QueryRelationToOne<Conta, Categoria>(_entities[1].properties[3]);
+
   /// see [Conta.tipo]
-  static final tipo = QueryBooleanProperty<Conta>(_entities[1].properties[3]);
+  static final tipo = QueryBooleanProperty<Conta>(_entities[1].properties[4]);
 
   /// see [Conta.data]
-  static final data = QueryStringProperty<Conta>(_entities[1].properties[4]);
+  static final data = QueryStringProperty<Conta>(_entities[1].properties[5]);
 
   /// see [Conta.descricao]
   static final descricao =
-      QueryStringProperty<Conta>(_entities[1].properties[5]);
+      QueryStringProperty<Conta>(_entities[1].properties[6]);
 
   /// see [Conta.valor]
-  static final valor = QueryDoubleProperty<Conta>(_entities[1].properties[6]);
+  static final valor = QueryDoubleProperty<Conta>(_entities[1].properties[7]);
 
   /// see [Conta.destinoOrigem]
   static final destinoOrigem =
-      QueryStringProperty<Conta>(_entities[1].properties[7]);
+      QueryStringProperty<Conta>(_entities[1].properties[8]);
 
   /// see [Conta.status]
-  static final status = QueryBooleanProperty<Conta>(_entities[1].properties[8]);
+  static final status = QueryBooleanProperty<Conta>(_entities[1].properties[9]);
 }

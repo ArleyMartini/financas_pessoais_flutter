@@ -7,7 +7,7 @@ class Conta {
   int? id;
   String? createdAt;
   String? updatedAt;
-  Categoria? categoria;
+  final categoria = ToOne<Categoria>();
   bool? tipo;
   String? data;
   String? descricao;
@@ -19,7 +19,6 @@ class Conta {
     this.id,
     this.createdAt,
     this.updatedAt,
-    this.categoria,
     this.tipo,
     this.data,
     this.descricao,

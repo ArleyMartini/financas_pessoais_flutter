@@ -43,8 +43,26 @@ class CategoriaListPage extends StatelessWidget {
                             ),
                           ),
                           IconButton(
-                            onPressed: () =>
-                                controller.delete(context, data[index]),
+                            onPressed: () => showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                title: const Text('Confirmar exclusão?'),
+                                actions: [
+                                  TextButton(
+                                      onPressed: () =>
+                                          Navigator.of(context).pop(),
+                                      child: const Text('Cancelar')),
+                                  TextButton(
+                                      onPressed: () {
+                                        context
+                                            .read<CategoriaController>()
+                                            .delete(context, data[index]);
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: const Text('Confirmar')),
+                                ],
+                              ),
+                            ),
                             icon: const Icon(
                               Icons.delete,
                               color: Colors.red,
